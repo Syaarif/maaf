@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maaf</title>
+<script>document.documentElement.classList.add("js");</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@800;900&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --kobalt:#1445b8;
+  --malam:#0a2463;
+  --kertas:#f2f6fd;
+  --tinta:#0d2b7a;
+  --kabut:#a9c0f0;
+  --lilin:#ffd66b;
+  --font-ui:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --font-tulis:"Kalam","Segoe Print","Bradley Hand",cursive;
+  --s2:1rem;--s3:2rem;--s4:4rem;--s5:7rem;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--kobalt);color:var(--kertas);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+
+.hero{min-height:60svh;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--s4) var(--s3) var(--s3);max-width:72rem;margin:0 auto}
+.hero h1{font-weight:900;font-size:clamp(5rem,26vw,20rem);line-height:.8;letter-spacing:-.02em;margin:0}
+.hero p{margin:var(--s3) 0 0;max-width:26rem;font-size:1.125rem;line-height:1.5;color:var(--kabut)}
+
+.surat-wrap{padding:var(--s3) var(--s3) var(--s5);max-width:72rem;margin:0 auto}
+.surat{background:var(--kertas);color:var(--tinta);max-width:36rem;margin-left:auto;padding:var(--s3) var(--s3) var(--s4);border-radius:3px;transform:rotate(-1.2deg);box-shadow:0 18px 40px -18px rgba(5,18,60,.65)}
+.surat p{font-family:var(--font-tulis);font-size:clamp(1.2rem,4.2vw,1.45rem);line-height:1.75;margin:0 0 1.1rem;max-width:34ch}
+.surat .ttd{font-weight:700;margin-top:1.6rem}
+
+/* Teks baru disembunyikan kalau JS aktif; tanpa JS, surat tetap terbaca */
+.js .surat p{clip-path:inset(0 100% 0 0)}
+.js .surat.on p{animation:tulis 1.1s cubic-bezier(.3,.6,.2,1) forwards;animation-delay:calc(var(--i)*.85s)}
+@keyframes tulis{to{clip-path:inset(0 0 0 0)}}
+
+.jawab{background:var(--malam);padding:var(--s5) var(--s3)}
+.jawab-in{max-width:36rem;margin:0 auto}
+.jawab h2{font-size:clamp(1.75rem,6vw,2.5rem);line-height:1.1;margin:0 0 var(--s3);font-weight:800}
+.pilihan{display:flex;flex-wrap:wrap;gap:var(--s2)}
+button{font:700 1.0625rem/1.2 var(--font-ui);padding:1rem 1.4rem;cursor:pointer;min-height:3rem}
+.ya{background:var(--kertas);color:var(--malam);border:2px solid var(--kertas);border-radius:4px}
+.nanti{background:transparent;color:var(--kertas);border:2px solid var(--kabut);border-radius:999px}
+button:focus-visible{outline:3px solid var(--lilin);outline-offset:3px}
+.balas{margin:var(--s3) 0 0;font-family:var(--font-tulis);font-size:1.5rem;line-height:1.5}
+
+@media (min-width:48rem){
+  .hero,.surat-wrap{padding-left:var(--s4);padding-right:var(--s4)}
+  .surat{padding:var(--s4);margin-right:6%}
+}
+@media (prefers-reduced-motion:reduce){
+  .js .surat p{clip-path:none;animation:none !important}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>Maaf.</h1>
+  <p>Aku menulis ini langsung, tanpa basa-basi.</p>
+</header>
+
+<main>
+  <section class="surat-wrap" aria-label="Surat permintaan maaf">
+    <article class="surat" id="surat">
+      <!-- Ganti "kamu" dan "aku" serta kalimat di bawah sesuai yang sebenarnya terjadi -->
+      <p style="--i:0">Untuk kamu,</p>
+      <p style="--i:1">Aku tahu kata maaf tidak langsung memperbaiki apa pun. Tapi aku tidak mau menundanya.</p>
+      <p style="--i:2">Aku salah. Aku menyakitimu, dan itu bukan hal kecil.</p>
+      <p style="--i:3">Aku tidak akan mencari alasan. Yang bisa kulakukan adalah mengakuinya, dan mendengarkan kalau kamu mau bercerita.</p>
+      <p style="--i:4">Ambil waktu sebanyak yang kamu perlukan.</p>
+      <p class="ttd" style="--i:5">Dari aku</p>
+    </article>
+  </section>
+
+  <section class="jawab" aria-labelledby="judul-jawab">
+    <div class="jawab-in">
+      <h2 id="judul-jawab">Kamu tidak harus menjawab sekarang.</h2>
+      <div class="pilihan">
+        <button class="ya" type="button" data-k="ya">Aku terima permintaan maafmu</button>
+        <button class="nanti" type="button" data-k="nanti">Aku butuh waktu dulu</button>
+      </div>
+      <p class="balas" id="balas" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<script>
+var surat = document.getElementById("surat");
+if ("IntersectionObserver" in window) {
+  var io = new IntersectionObserver(function (e) {
+    if (e[0].isIntersecting) { surat.classList.add("on"); io.disconnect(); }
+  }, { threshold: 0.25 });
+  io.observe(surat);
+} else {
+  surat.classList.add("on");
+}
+
+var BALASAN = {
+  ya: "Terima kasih. Aku akan menjaga kepercayaan itu.",
+  nanti: "Tentu. Aku akan menunggu, tanpa mendesak."
+};
+var balas = document.getElementById("balas");
+document.querySelectorAll("button[data-k]").forEach(function (b) {
+  b.addEventListener("click", function () { balas.textContent = BALASAN[b.dataset.k]; });
+});
+</script>
+</body>
+</html>
